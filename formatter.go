@@ -8,11 +8,13 @@ import (
 	"strings"
 )
 
+// FormatOption can be passed to Diff.Format. Treat these as opaque, i.e. don't rely on the underlying type or values of FormatOptions.
 type FormatOption int
 
 const (
 	ShowArrayIndex FormatOption = iota
 	Colored
+	HideUnchangedProperties
 )
 
 func (diff Diff) Format(left any, opts ...FormatOption) string {
@@ -23,6 +25,8 @@ func (diff Diff) Format(left any, opts ...FormatOption) string {
 			f.config.ShowArrayIndex = true
 		case Colored:
 			f.config.Coloring = true
+		case HideUnchangedProperties:
+			f.config.HideUnchangedProperties = true
 		}
 	}
 	if v, ok := f.left.(map[string]any); ok {
@@ -47,8 +51,9 @@ type asciiFormatter struct {
 }
 
 type asciiFormatterConfig struct {
-	ShowArrayIndex bool
-	Coloring       bool
+	ShowArrayIndex          bool
+	Coloring                bool
+	HideUnchangedProperties bool
 }
 
 type asciiLine struct {
@@ -187,7 +192,7 @@ func (f *asciiFormatter) processItem(value any, deltas []Delta, position Positio
 			}
 
 		}
-	} else {
+	} else if !f.config.HideUnchangedProperties {
 		f.printRecursive(positionStr, value, AsciiSame)
 	}
 

@@ -25,3 +25,22 @@ func Example() {
 	//    "foo": 10
 	//  }
 }
+
+func ExampleHideUnchangedProperties() {
+	before := map[string]any{
+		"foo": 10,
+		"bar": 20,
+		"boz": 30,
+	}
+	after := map[string]any{
+		"foo": 10,
+		"bar": 42,
+	}
+	diff := jsondiff.CompareObjects(before, after)
+	fmt.Println(diff.Format(before, jsondiff.HideUnchangedProperties))
+	// Output: {
+	// -  "bar": 20,
+	// +  "bar": 42,
+	// -  "boz": 30,
+	//  }
+}
