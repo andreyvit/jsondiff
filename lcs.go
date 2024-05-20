@@ -1,12 +1,7 @@
 package jsondiff
 
 type (
-	lcs struct {
-		left, right []any
-		table       [][]int
-	}
-
-	// lcsIndexPair represents an pair of indices in the Left and Right arrays found in the LCS value.
+	// lcsIndexPair represents an pair of indices in the left and right arrays.
 	lcsIndexPair struct {
 		Left  int
 		Right int
