@@ -38,7 +38,7 @@ type maybe struct {
 	item     any
 }
 
-func compareArrays(left, right []any) []Delta {
+func CompareArrays(left, right []any) Diff {
 	deltas := make([]Delta, 0)
 	// LCS index pairs
 	lcsPairs := lcsIndexPairs(left, right, reflect.DeepEqual)
@@ -160,7 +160,7 @@ func compareValues(position Position, left, right any) (same bool, delta Delta) 
 
 	case []any:
 		l := left.([]any)
-		childDeltas := compareArrays(l, right.([]any))
+		childDeltas := CompareArrays(l, right.([]any))
 
 		if len(childDeltas) > 0 {
 			return false, NewArray(position, childDeltas)
