@@ -205,10 +205,7 @@ func maximizeSimilarities(left []maybe, right []maybe) (resultDeltas []Delta, fr
 		}
 	}
 
-	minLength := len(left)
-	if minLength > len(right) {
-		minLength = len(right)
-	}
+	minLength := min(len(left), len(right))
 	maxInvalidLength := minLength - 1
 
 	freeLeft = make([]maybe, 0, len(left)-minLength)

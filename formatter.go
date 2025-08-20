@@ -87,9 +87,8 @@ func (f *asciiFormatter) processArray(array []any, deltas []Delta) error {
 
 	// additional Added
 	for _, delta := range deltas {
-		switch delta.(type) {
+		switch d := delta.(type) {
 		case *Added:
-			d := delta.(*Added)
 			// skip items already processed
 			if int(d.Position.(Index)) < len(array) {
 				continue
@@ -110,9 +109,8 @@ func (f *asciiFormatter) processObject(object map[string]any, deltas []Delta) er
 
 	// Added
 	for _, delta := range deltas {
-		switch delta.(type) {
+		switch d := delta.(type) {
 		case *Added:
-			d := delta.(*Added)
 			f.printRecursive(d.Position.String(), d.Value, AsciiAdded)
 		}
 	}
@@ -126,9 +124,8 @@ func (f *asciiFormatter) processItem(value any, deltas []Delta, position Positio
 	if len(matchedDeltas) > 0 {
 		for _, matchedDelta := range matchedDeltas {
 
-			switch matchedDelta.(type) {
+			switch d := matchedDelta.(type) {
 			case *Object:
-				d := matchedDelta.(*Object)
 				switch value.(type) {
 				case map[string]any:
 					//ok
@@ -150,7 +147,6 @@ func (f *asciiFormatter) processItem(value any, deltas []Delta, position Positio
 				f.closeLine()
 
 			case *Array:
-				d := matchedDelta.(*Array)
 				switch value.(type) {
 				case []any:
 					//ok
@@ -172,19 +168,16 @@ func (f *asciiFormatter) processItem(value any, deltas []Delta, position Positio
 				f.closeLine()
 
 			case *Added:
-				d := matchedDelta.(*Added)
 				f.printRecursive(positionStr, d.Value, AsciiAdded)
 				f.size[len(f.size)-1]++
 
 			case *Modified:
-				d := matchedDelta.(*Modified)
 				savedSize := f.size[len(f.size)-1]
 				f.printRecursive(positionStr, d.OldValue, AsciiDeleted)
 				f.size[len(f.size)-1] = savedSize
 				f.printRecursive(positionStr, d.NewValue, AsciiAdded)
 
 			case *Deleted:
-				d := matchedDelta.(*Deleted)
 				f.printRecursive(positionStr, d.Value, AsciiDeleted)
 
 			default:
@@ -299,20 +292,19 @@ func (f *asciiFormatter) print(a string) {
 }
 
 func (f *asciiFormatter) printRecursive(name string, value any, marker string) {
-	switch value.(type) {
+	switch v := value.(type) {
 	case map[string]any:
 		f.newLine(marker)
 		f.printKey(name)
 		f.print("{")
 		f.closeLine()
 
-		m := value.(map[string]any)
-		size := len(m)
+		size := len(v)
 		f.push(name, size, false)
 
-		keys := sortedKeys(m)
+		keys := sortedKeys(v)
 		for _, key := range keys {
-			f.printRecursive(key, m[key], marker)
+			f.printRecursive(key, v[key], marker)
 		}
 		f.pop()
 
@@ -327,10 +319,9 @@ func (f *asciiFormatter) printRecursive(name string, value any, marker string) {
 		f.print("[")
 		f.closeLine()
 
-		s := value.([]any)
-		size := len(s)
+		size := len(v)
 		f.push("", size, true)
-		for _, item := range s {
+		for _, item := range v {
 			f.printRecursive("", item, marker)
 		}
 		f.pop()
