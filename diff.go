@@ -3,6 +3,7 @@ package jsondiff
 import (
 	"container/list"
 	"reflect"
+	"slices"
 )
 
 type Diff []Delta
@@ -40,6 +41,10 @@ type maybe struct {
 
 func CompareArrays(left, right []any) Diff {
 	deltas := make([]Delta, 0)
+	if slices.EqualFunc(left, right, reflect.DeepEqual) {
+		return deltas
+	}
+
 	// LCS index pairs
 	lcsPairs := lcsIndexPairs(left, right, reflect.DeepEqual)
 
