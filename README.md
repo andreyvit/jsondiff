@@ -7,23 +7,29 @@ This is a derivative of [yudai/gojsondiff](https://github.com/yudai/gojsondiff/t
 
 ## Usage
 
+Install: `go get github.com/andreyvit/jsondiff`.
+
 ```go
+package main
+
 import (
-    "github.com/andreyvit/jsondiff"
+	"fmt"
+
+	"github.com/andreyvit/jsondiff"
 )
 
 func main() {
-    before := map[string]any{
-        "foo": 10,
-        "bar": 20,
-        "boz": 30,
-    }
-    after := map[string]any{
-        "foo": 10,
-        "bar": 42,
-    }
-    diff := jsondiff.CompareObjects(before, after)
-    fmt.Println(diff.Format(before))
+	before := map[string]any{
+		"foo": 10,
+		"bar": 20,
+		"boz": 30,
+	}
+	after := map[string]any{
+		"foo": 10,
+		"bar": 42,
+	}
+	diff := jsondiff.CompareObjects(before, after)
+	fmt.Println(diff.Format(before))
 }
 ```
 
@@ -39,3 +45,7 @@ Outputs:
 ```
 
 Use `diff.Format(before, jsondiff.Colored)` to add some ANSI colors for printing.
+
+## License
+
+See [LICENSE](LICENSE).
